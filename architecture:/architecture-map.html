@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Modular Architecture Map — Nesselle Fetalvero</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #F7F3EE; font-family: 'DM Sans', sans-serif; color: #3D2420; }
+
+  .arch-map-wrapper {
+    width: 100%; max-width: 960px; margin: 0 auto;
+    padding: 64px 32px 80px; box-sizing: border-box;
+  }
+  .arch-map-header { text-align: center; margin-bottom: 56px; }
+  .arch-map-header h2 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3rem); letter-spacing: 0.02em;
+    color: #3D2420; margin: 0 0 16px;
+  }
+  .arch-map-header p {
+    font-size: 0.875rem; font-weight: 300; line-height: 1.7;
+    color: #8C5A4E; max-width: 580px; margin: 0 auto; letter-spacing: 0.01em;
+  }
+
+  .arch-canvas { position: relative; width: 100%; }
+  .arch-canvas svg.connectors {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0; overflow: visible;
+  }
+  .connector-path {
+    fill: none; stroke: #D4A896; stroke-width: 1.5;
+    stroke-dasharray: 500; stroke-dashoffset: 500;
+    opacity: 0.6; transition: opacity 0.3s;
+  }
+  .connector-path.animated { animation: drawLine 0.8s ease-out forwards; }
+  .connector-path.highlight { stroke: #8C5A4E; opacity: 1; stroke-width: 2; }
+  @keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+  .arch-row {
+    display: flex; justify-content: center; gap: 16px;
+    position: relative; z-index: 1;
+    opacity: 0; transform: translateY(12px);
+    animation: fadeUp 0.6s ease-out forwards;
+  }
+  .arch-row.domains { margin-bottom: 64px; animation-delay: 0.1s; }
+  .arch-row.core    { margin-bottom: 64px; animation-delay: 0.35s; }
+  .arch-row.impact  { animation-delay: 0.6s; }
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* Domain boxes */
+  .domain-box {
+    background: #EDE0D4; border: 1px solid #D4A896; border-radius: 4px;
+    padding: 24px 20px 20px; flex: 1; min-width: 0; cursor: default;
+    position: relative; transition: background 0.25s, transform 0.25s, box-shadow 0.25s;
+  }
+  .domain-box:hover {
+    background: #E4D0C0; transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(61,36,32,0.08);
+  }
+  .domain-box .domain-label {
+    font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 500;
+    letter-spacing: 0.04em; color: #8C5A4E; margin: 0 0 4px;
+    text-transform: uppercase; font-style: italic;
+  }
+  .domain-box .domain-count {
+    font-size: 0.7rem; color: #D4A896; letter-spacing: 0.06em;
+    text-transform: uppercase; margin-bottom: 14px;
+  }
+  .domain-box .automations { display: none; flex-direction: column; gap: 6px; }
+  .domain-box:hover .automations { display: flex; }
+  .automation-item {
+    font-size: 0.72rem; color: #3D2420; line-height: 1.4;
+    padding: 5px 8px; background: rgba(255,255,255,0.45);
+    border-left: 2px solid #D4A896; border-radius: 2px;
+  }
+
+  /* Core layer */
+  .core-box {
+    background: #3D2420; border-radius: 4px; padding: 28px 36px;
+    width: 100%; max-width: 640px; text-align: center;
+  }
+  .core-box .core-label {
+    font-family: 'Cormorant Garamond', serif; font-size: 0.75rem;
+    font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #D4A896; margin-bottom: 16px;
+  }
+  .core-pills { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .core-pill {
+    font-family: 'DM Sans', sans-serif; font-size: 0.72rem;
+    font-weight: 400; letter-spacing: 0.05em; color: #EDE0D4;
+    padding: 6px 14px; border: 1px solid rgba(212,168,150,0.35);
+    border-radius: 100px; background: rgba(255,255,255,0.06);
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .core-pill:hover { background: rgba(212,168,150,0.15); border-color: #D4A896; }
+
+  /* Impact row */
+  .impact-box {
+    flex: 1; text-align: center; padding: 20px 16px;
+    background: #EDE0D4; border: 1px solid #D4A896; border-radius: 4px;
+    transition: background 0.25s, transform 0.25s;
+  }
+  .impact-box:hover { background: #E4D0C0; transform: translateY(-2px); }
+  .impact-icon { font-size: 1.1rem; margin-bottom: 6px; display: block; }
+  .impact-label {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.05rem;
+    font-weight: 500; font-style: italic; color: #8C5A4E; letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 680px) {
+    .arch-row.domains { flex-direction: column; }
+    .domain-box { flex: none; }
+    .arch-map-wrapper { padding: 40px 20px 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="arch-map-wrapper">
+  <div class="arch-map-header">
+    <h2>Modular Architecture Map</h2>
+    <p>I design modular automation systems that solve specific operational problems while remaining adaptable for future integration into a larger ecosystem.</p>
+  </div>
+
+  <div class="arch-canvas" id="archCanvas">
+    <svg class="connectors" id="connectorSvg" aria-hidden="true"></svg>
+
+    <!-- Row 1: Domains -->
+    <div class="arch-row domains" id="rowDomains">
+      <div class="domain-box" id="domOps">
+        <div class="domain-label">Operations</div>
+        <div class="domain-count">Systems</div>
+        <div class="automations">
+          <div class="automation-item">Task Automation System</div>
+          <div class="automation-item">EOD Logger</div>
+          <div class="automation-item">Operations Intelligence System</div>
+        </div>
+      </div>
+      <div class="domain-box" id="domHR">
+        <div class="domain-label">HR</div>
+        <div class="domain-count">Systems</div>
+        <div class="automations">
+          <div class="automation-item">Employee Master File</div>
+          <div class="automation-item">Timecard Batch Sender</div>
+          <div class="automation-item">Leave Management System</div>
+          <div class="automation-item">Birthday Reminder</div>
+        </div>
+      </div>
+      <div class="domain-box" id="domAnalytics">
+        <div class="domain-label">Analytics</div>
+        <div class="domain-count">Systems</div>
+        <div class="automations">
+          <div class="automation-item">Sales Dashboard</div>
+          <div class="automation-item">Operations Intelligence System</div>
+        </div>
+      </div>
+      <div class="domain-box" id="domDocs">
+        <div class="domain-label">Document</div>
+        <div class="domain-count">Systems</div>
+        <div class="automations">
+          <div class="automation-item">Trace Document by MSN Search</div>
+          <div class="automation-item">Master File Index</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Core Automation Layer -->
+    <div class="arch-row core" id="rowCore">
+      <div class="core-box" id="coreBox">
+        <div class="core-label">Core Automation Layer</div>
+        <div class="core-pills">
+          <span class="core-pill">Apps Script</span>
+          <span class="core-pill">Google Sheets</span>
+          <span class="core-pill">Web Apps</span>
+          <span class="core-pill">Gmail API</span>
+          <span class="core-pill">AI-augmented Development</span>
+          <span class="core-pill">GitHub</span>
+          <span class="core-pill">Netlify</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Business Impact -->
+    <div class="arch-row impact" id="rowImpact">
+      <div class="impact-box">
+        <span class="impact-icon">⚡</span>
+        <div class="impact-label">Efficiency</div>
+      </div>
+      <div class="impact-box">
+        <span class="impact-icon">◎</span>
+        <div class="impact-label">Visibility</div>
+      </div>
+      <div class="impact-box">
+        <span class="impact-icon">↗</span>
+        <div class="impact-label">Scalability</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  function getCenter(el, parent) {
+    var e = el.getBoundingClientRect(), p = parent.getBoundingClientRect();
+    return {
+      x: e.left - p.left + e.width / 2,
+      y: e.top - p.top + e.height / 2,
+      top: e.top - p.top,
+      bottom: e.top - p.top + e.height,
+      left: e.left - p.left,
+      right: e.left - p.left + e.width
+    };
+  }
+
+  function makePath(svg, d, delay) {
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    path.classList.add('connector-path');
+    path.style.animationDelay = delay + 's';
+    svg.appendChild(path);
+    try {
+      var len = path.getTotalLength();
+      path.style.strokeDasharray = len;
+      path.style.strokeDashoffset = len;
+    } catch(e) {
+      path.style.strokeDasharray = 300;
+      path.style.strokeDashoffset = 300;
+    }
+    return path;
+  }
+
+  function draw() {
+    var canvas = document.getElementById('archCanvas');
+    var svg = document.getElementById('connectorSvg');
+    if (!canvas || !svg) return;
+    svg.innerHTML = '';
+
+    var domains = ['domOps','domHR','domAnalytics','domDocs'].map(function(id) {
+      return document.getElementById(id);
+    });
+    var core = document.getElementById('coreBox');
+    var impacts = canvas.querySelectorAll('.impact-box');
+    if (!core) return;
+
+    var c = getCenter(core, canvas), delay = 0;
+
+    domains.forEach(function(box) {
+      if (!box) return;
+      var b = getCenter(box, canvas);
+      var x1 = b.x, y1 = b.bottom;
+      var x2 = c.x + (b.x - c.x) * 0.15, y2 = c.top;
+      var cy = (y1 + y2) / 2;
+      var path = makePath(svg, 'M ' + x1 + ' ' + y1 + ' C ' + x1 + ' ' + cy + ', ' + x2 + ' ' + cy + ', ' + x2 + ' ' + y2, delay);
+      delay += 0.1;
+      box.addEventListener('mouseenter', function() { path.classList.add('highlight'); });
+      box.addEventListener('mouseleave', function() { path.classList.remove('highlight'); });
+    });
+
+    impacts.forEach(function(box) {
+      var b = getCenter(box, canvas);
+      var x1 = c.x + (b.x - c.x) * 0.15, y1 = c.bottom;
+      var x2 = b.x, y2 = b.top;
+      var cy = (y1 + y2) / 2;
+      makePath(svg, 'M ' + x1 + ' ' + y1 + ' C ' + x1 + ' ' + cy + ', ' + x2 + ' ' + cy + ', ' + x2 + ' ' + y2, delay);
+      delay += 0.1;
+    });
+
+    requestAnimationFrame(function() {
+      svg.querySelectorAll('.connector-path').forEach(function(p) {
+        p.classList.add('animated');
+      });
+    });
+  }
+
+  setTimeout(draw, 700);
+
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(draw, 200);
+  });
+})();
+</script>
+
+</body>
+</html>
