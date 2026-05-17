@@ -741,18 +741,14 @@
   </div>
 
   <!-- ══ PANEL 2 · FEATURED WORK ══ -->
-  <div class="panel" id="panel-featured" style="position:relative;">
+  <div class="panel" id="panel-featured">
     <iframe
       src="featured-work-panel.html"
-      style="width:100%;height:100%;border:none;display:block;pointer-events:none;"
+      style="width:100%;height:100%;border:none;display:block;"
       title="Featured Work — Commission Reconciliation"
       id="featuredFrame"
       tabindex="-1"
     ></iframe>
-    <!-- transparent overlay: captures scroll/touch on desktop, enables click-to-unlock on mobile -->
-    <div id="featured-overlay" style="
-      position:absolute;inset:0;z-index:10;cursor:default;
-    "></div>
   </div>
 
 
@@ -952,7 +948,7 @@
         <button class="back-btn" onclick="showGallery()">Back to Systems</button>
         <div style="display:flex;align-items:center;gap:12px;"><span class="proj-counter">8 / 10</span><div class="proj-nav-arrows"><button class="proj-arrow-btn" onclick="showDetail(6)">←</button><button class="proj-arrow-btn" onclick="showDetail(8)">→</button></div></div>
       </div>
-      <div class="exhibit-media"><span class="exhibit-badge-num">08 / 10</span><span class="exhibit-badge-type">Screenshot + GIF</span><span class="exhibit-media-hint">[ PROJECT_08_SCREENSHOT_URL ]</span></div>
+      <div class="exhibit-media"><span class="exhibit-badge-num">08 / 10</span><span class="exhibit-badge-type">Video</span><video autoplay loop muted playsinline style="width:100%;height:100%;object-fit:cover;border-radius:inherit;"><source src="assets/trace-document-msn.mp4" type="video/mp4"></video></div>
       <h2 class="exhibit-title">Trace Document by MSN Search</h2>
       <div class="exhibit-type-pills"><span class="exhibit-pill">Formula</span><span class="exhibit-pill">UX Design</span></div>
       <div class="exhibit-rule"></div>
@@ -991,17 +987,17 @@
         <button class="back-btn highlighted" onclick="showGallery()">Back to Systems</button>
         <div style="display:flex;align-items:center;gap:12px;"><span class="proj-counter">10 / 10</span><div class="proj-nav-arrows"><button class="proj-arrow-btn" onclick="showDetail(8)">←</button><button class="proj-arrow-btn" disabled>→</button></div></div>
       </div>
-      <div class="exhibit-media"><span class="exhibit-badge-num">10 / 10</span><span class="exhibit-badge-type">Screenshot</span><span class="exhibit-media-hint">[ PROJECT_10_SCREENSHOT_URL ]</span></div>
+      <div class="exhibit-media"><span class="exhibit-badge-num">10 / 10</span><span class="exhibit-badge-type">Interactive</span><iframe src="bdayreminder/birthday_viewer.html" style="width:100%;height:100%;border:none;border-radius:inherit;" allowfullscreen></iframe></div>
       <h2 class="exhibit-title">Birthday Reminder Automation</h2>
       <div class="exhibit-type-pills"><span class="exhibit-pill">Script</span><span class="exhibit-pill">Triggered</span></div>
       <div class="exhibit-rule"></div>
       <div class="exhibit-grid">
         <div class="exhibit-cell"><span class="exhibit-cell-label">The Problem</span><p>Birthdays were being missed. The native calendar reminder was unreliable and multiple occasions slipped through unacknowledged.</p></div>
-        <div class="exhibit-cell"><span class="exhibit-cell-label">The Fix</span><p>Script fires automated emails 2 days before, 1 day before, and on the birthday itself — giving management time to prepare.</p></div>
-        <div class="exhibit-cell"><span class="exhibit-cell-label">How It Works</span><p>Apps Script runs on a daily trigger → checks birthday list → sends timed reminder emails at each interval automatically.</p></div>
+        <div class="exhibit-cell"><span class="exhibit-cell-label">The Fix</span><p>Script fires automated emails 2 days before, 1 day before, and on the birthday itself — giving management time to prepare. On the day itself, the celebrant also receives a warm birthday greeting from the team.</p></div>
+        <div class="exhibit-cell"><span class="exhibit-cell-label">How It Works</span><p>Apps Script runs on a daily trigger → checks birthday list → sends timed reminder emails to management at each interval → on the birthday, a separate email is sent directly to the celebrant.</p></div>
         <div class="exhibit-cell"><span class="exhibit-cell-label">What's Gone</span><p>Missed birthdays, manual checking, last-minute scrambles, zero-notice acknowledgments.</p></div>
       </div>
-      <div class="exhibit-impact"><p>★ Every birthday acknowledged. Every time.</p></div>
+      <div class="exhibit-impact"><p>★ Every birthday acknowledged. Every time. Management prepared. Celebrant greeted.</p></div>
       <div class="exhibit-tools"><span class="exhibit-tool">Google Apps Script</span><span class="exhibit-tool">Google Sheets</span><span class="exhibit-tool">Time-based Triggers</span><span class="exhibit-tool">Gmail API</span></div>
     </div></div>
 
@@ -1081,6 +1077,9 @@
           <span class="cpill">Dashboard Design &amp; Data Visualization</span>
           <span class="cpill">Workflow Automation &amp; Systems Integration</span>
           <span class="cpill">Sales Performance &amp; Commission Analysis</span>
+          <span class="cpill">Sales Pipeline &amp; Funnel Reporting</span>
+          <span class="cpill">KPI Dashboard Development</span>
+          <span class="cpill">Automated Reporting Systems</span>
           <span class="cpill">ERP Systems &amp; Data Reconciliation</span>
           <span class="cpill">HR Systems &amp; People Operations</span>
           <span class="cpill">Vendor &amp; Contract Management</span>
@@ -1114,6 +1113,19 @@
             <span class="tp-blush">Gantt Charts</span>
             <span class="tp-blush">PDF Export</span>
             <span class="tp-learning">SQL <span class="badge">learning</span></span>
+          </div>
+        </div>
+        <div class="tools-card">
+          <p class="tools-card-label tc-terracotta">Sales Analytics &amp; Reporting</p>
+          <div class="tpills">
+            <span class="tp-terra">Sales Pipeline Reporting</span>
+            <span class="tp-terra">Funnel Reporting</span>
+            <span class="tp-terra">Dashboard Automation</span>
+            <span class="tp-blush">Automated Reporting Systems</span>
+            <span class="tp-blush">Sales Performance Analytics</span>
+            <span class="tp-blush">KPI Dashboard Development</span>
+            <span class="tp-blush">Data Visualization</span>
+            <span class="tp-blush">Workflow Automation</span>
           </div>
         </div>
         <div class="tools-card">
@@ -1374,53 +1386,11 @@
     }
   });
 
-  // Featured work iframe — prevent focus trap completely
-  (function() {
-    var panel    = document.getElementById('panel-featured');
-    var overlay  = document.getElementById('featured-overlay');
-    var iframe   = document.getElementById('featuredFrame');
-    if (!panel || !overlay || !iframe) return;
-
-    // Forward wheel events from overlay to the panel's scroll
-    overlay.addEventListener('wheel', function(e) {
-      panel.scrollTop += e.deltaY;
-      e.preventDefault();
-    }, { passive: false });
-
-    // Forward touch swipes from overlay: vertical = panel scroll, horizontal = panel nav
-    var ox = 0, oy = 0;
-    overlay.addEventListener('touchstart', function(e) {
-      ox = e.touches[0].clientX;
-      oy = e.touches[0].clientY;
-    }, { passive: true });
-    overlay.addEventListener('touchmove', function(e) {
-      var dx = e.touches[0].clientX - ox;
-      var dy = e.touches[0].clientY - oy;
-      if (Math.abs(dy) > Math.abs(dx)) {
-        // vertical — scroll the panel
-        panel.scrollTop -= dy;
-        oy = e.touches[0].clientY;
-        e.preventDefault();
-      }
-      // horizontal swipes fall through to the global touchend handler
-    }, { passive: false });
-
-    // Enable pointer events on iframe only when user explicitly clicks into it
-    // (so they can interact with the content), then re-lock on any nav action
-    overlay.addEventListener('click', function() {
-      overlay.style.pointerEvents = 'none';
-      iframe.style.pointerEvents = 'auto';
-      iframe.focus({ preventScroll: true });
-    });
-
-    // Re-lock when user navigates away from this panel
-    var origGoTo = window.goTo;
-    window.goTo = function(index) {
-      overlay.style.pointerEvents = 'auto';
-      iframe.style.pointerEvents = 'none';
-      origGoTo(index);
-    };
-  })();
+  // Featured work iframe — postMessage bridge so horizontal swipes inside escape to parent nav
+  window.addEventListener('message', function(e) {
+    if (e.data === 'nav:next') goTo(current + 1);
+    if (e.data === 'nav:prev') goTo(current - 1);
+  });
 
   showGallery();
   goTo(0);
