@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Reminder Automation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --beige: #f0ebe3;
+    --beige-dark: #e5ddd3;
+    --beige-border: #d9d0c5;
+    --brown: #6b4f3a;
+    --brown-light: #9c7b65;
+    --brown-muted: #b8a090;
+    --text: #2c1f14;
+    --text-muted: #7a6255;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--beige);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    overflow: hidden;
+  }
+
+  .viewer {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--beige-border);
+    background: var(--beige);
+    flex-shrink: 0;
+  }
+
+  .topbar-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: 0.01em;
+  }
+
+  .page-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--beige-border);
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .dot.active {
+    background: var(--brown);
+  }
+
+  /* Pages container */
+  .pages {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .page {
+    min-width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 32px;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  #page1 { transform: translateX(0); }
+  #page2 { transform: translateX(100%); }
+
+  .pages.show-page2 #page1 { transform: translateX(-100%); }
+  .pages.show-page2 #page2 { transform: translateX(0); }
+
+  /* Page 1 — Calendar GIF */
+  .gif-wrap {
+    width: 100%;
+    max-width: 700px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--beige-border);
+    background: #fff;
+  }
+
+  .gif-wrap img {
+    width: 100%;
+    display: block;
+  }
+
+  .page-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--brown-muted);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    align-self: flex-start;
+    max-width: 700px;
+    width: 100%;
+  }
+
+  /* Page 2 — Email scroll */
+  .email-scroll-wrap {
+    width: 100%;
+    max-width: 700px;
+    height: 100%;
+    overflow-y: auto;
+    border-radius: 16px;
+    border: 1px solid var(--beige-border);
+    background: #fff;
+    scrollbar-width: thin;
+    scrollbar-color: var(--beige-border) transparent;
+  }
+
+  .email-scroll-wrap::-webkit-scrollbar { width: 5px; }
+  .email-scroll-wrap::-webkit-scrollbar-track { background: transparent; }
+  .email-scroll-wrap::-webkit-scrollbar-thumb { background: var(--beige-border); border-radius: 10px; }
+
+  .email-scroll-wrap img {
+    width: 100%;
+    display: block;
+  }
+
+  /* Nav arrows */
+  .nav-btn {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--beige-border);
+    background: var(--beige);
+    color: var(--brown);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.2s;
+    z-index: 100;
+  }
+
+  .nav-btn:hover {
+    background: var(--beige-dark);
+    border-color: var(--brown-muted);
+  }
+
+  .nav-btn.left { left: 16px; }
+  .nav-btn.right { right: 16px; }
+
+  .nav-btn:disabled {
+    opacity: 0.25;
+    cursor: default;
+  }
+
+  /* Scroll hint on page 2 */
+  .scroll-hint {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--brown-muted);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    animation: bounce 2s infinite;
+    pointer-events: none;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(4px); }
+  }
+
+  .scroll-hint svg {
+    width: 14px;
+    height: 14px;
+    stroke: var(--brown-muted);
+    fill: none;
+    stroke-width: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="viewer">
+  <div class="topbar">
+    <span class="topbar-title">Birthday Reminder Automation &nbsp;·&nbsp; 10 / 10</span>
+    <div class="page-indicator">
+      <div class="dot active" id="dot1" onclick="goTo(0)"></div>
+      <div class="dot" id="dot2" onclick="goTo(1)"></div>
+    </div>
+  </div>
+
+  <div class="pages" id="pages">
+
+    <div class="page" id="page1">
+      <div class="page-label">Reminder flow — illustration</div>
+      <div class="gif-wrap">
+        <img src="birthday_calendar.gif" alt="Birthday reminder calendar animation" />
+      </div>
+    </div>
+
+    <div class="page" id="page2">
+      <div class="page-label">Email sequence — scroll to view all</div>
+      <div class="email-scroll-wrap" id="emailScroll">
+        <img src="birthday_reminder_emails.png" alt="Birthday reminder email mockups" />
+      </div>
+      <div class="scroll-hint" id="scrollHint">
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        scroll to read
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<button class="nav-btn left" id="btnLeft" onclick="goTo(0)" disabled>&#8592;</button>
+<button class="nav-btn right" id="btnRight" onclick="goTo(1)">&#8594;</button>
+
+<script>
+  let current = 0;
+
+  function goTo(page) {
+    current = page;
+    const pages = document.getElementById('pages');
+    pages.classList.toggle('show-page2', page === 1);
+    document.getElementById('dot1').classList.toggle('active', page === 0);
+    document.getElementById('dot2').classList.toggle('active', page === 1);
+    document.getElementById('btnLeft').disabled = page === 0;
+    document.getElementById('btnRight').disabled = page === 1;
+    if (page === 1) {
+      document.getElementById('emailScroll').scrollTop = 0;
+    }
+  }
+
+  // Hide scroll hint once user scrolls
+  const emailScroll = document.getElementById('emailScroll');
+  const scrollHint = document.getElementById('scrollHint');
+  emailScroll.addEventListener('scroll', () => {
+    if (emailScroll.scrollTop > 30) scrollHint.style.opacity = '0';
+    else scrollHint.style.opacity = '1';
+  });
+
+  // Keyboard nav
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' && current === 0) goTo(1);
+    if (e.key === 'ArrowLeft' && current === 1) goTo(0);
+  });
+</script>
+
+</body>
+</html>
