@@ -3,37 +3,90 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Featured Work — Commission Reconciliation</title>
+<title>Featured Work — Nesselle Fetalvero</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --ivory:  #F7F3EE;
-    --blush:  #EDE0D4;
-    --terra:  #D4A896;
-    --clay:   #8C5A4E;
-    --deep:   #3D2420;
-    --head:   "Cormorant Garamond", Georgia, serif;
-    --body:   "DM Sans", sans-serif;
-  }
+  :root { --ivory:#F7F3EE; --blush:#EDE0D4; --terra:#D4A896; --clay:#8C5A4E; --deep:#3D2420; }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--ivory); color: var(--deep); font-family: var(--body); font-size: 15px; line-height: 1.75; -webkit-font-smoothing: antialiased; }
-  .wrap { max-width: 1200px; margin: 0 auto; padding: 56px 48px 80px; }
-  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terra); margin-bottom: 28px; }
-  .fw-title { font-family: var(--head); font-size: clamp(30px,4vw,50px); font-weight: 300; line-height: 1.1; margin-bottom: 10px; }
+  html, body { height: 100%; overflow: hidden; }
+  body { background: var(--ivory); color: var(--deep); font-family: "DM Sans", sans-serif; font-size: 15px; line-height: 1.75; -webkit-font-smoothing: antialiased; }
+  .view { position: absolute; inset: 0; overflow-y: auto; transition: opacity 0.3s, transform 0.3s; }
+  .view::-webkit-scrollbar { width: 4px; }
+  .view::-webkit-scrollbar-thumb { background: var(--blush); border-radius: 2px; }
+  .view.hidden { opacity: 0; pointer-events: none; transform: translateY(14px); }
+  /* GALLERY */
+  .gallery-wrap { max-width: 1100px; margin: 0 auto; padding: 48px 56px 72px; }
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terra); margin-bottom: 12px; }
+  .gallery-title { font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(32px,4vw,52px); font-weight: 300; color: var(--deep); line-height: 1.05; margin-bottom: 8px; }
+  .gallery-title em { font-style: italic; color: var(--clay); }
+  .gallery-sub { font-family: "Cormorant Garamond", Georgia, serif; font-size: 15px; font-style: italic; color: var(--clay); margin-bottom: 40px; }
+  .fw-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+  .fw-card { background: var(--blush); border-radius: 14px; border: 1px solid rgba(212,168,150,0.3); padding: 24px 22px 20px; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; min-height: 230px; }
+  .fw-card:hover { border-color: var(--terra); transform: translateY(-3px); box-shadow: 0 8px 28px rgba(61,36,32,0.10); }
+  .fw-card-num { font-size: 10px; color: var(--clay); letter-spacing: 0.12em; font-weight: 600; text-transform: uppercase; margin-bottom: 12px; display: block; }
+  .fw-card-title { font-family: "Cormorant Garamond", Georgia, serif; font-size: 21px; font-weight: 300; color: var(--deep); line-height: 1.2; margin-bottom: 6px; }
+  .fw-card-title em { font-style: italic; color: var(--clay); }
+  .fw-card-context { font-size: 11px; color: var(--clay); letter-spacing: 0.04em; margin-bottom: 12px; font-style: italic; }
+  .fw-card-desc { font-size: 12.5px; color: var(--deep); line-height: 1.7; flex: 1; opacity: 0.85; }
+  .fw-card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
+  .fw-card-tag { font-size: 10px; padding: 3px 10px; border-radius: 100px; background: var(--ivory); color: var(--clay); border: 1px solid rgba(212,168,150,0.5); letter-spacing: 0.03em; }
+  .fw-card-arrow { position: absolute; bottom: 14px; right: 16px; font-size: 15px; color: var(--terra); opacity: 0; transition: opacity 0.2s, transform 0.2s; }
+  .fw-card:hover .fw-card-arrow { opacity: 1; transform: translateX(3px); }
+  /* STORY SHARED */
+  .story-wrap { max-width: 1200px; margin: 0 auto; padding: 40px 48px 80px; }
+  .story-back-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 12px; }
+  .story-back { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--clay); background: none; border: none; cursor: pointer; padding: 0; transition: color 0.2s; }
+  .story-back::before { content: "\2190"; font-size: 14px; }
+  .story-back:hover { color: var(--deep); }
+  .story-nav-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .story-nav-pill { font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 14px; border-radius: 100px; background: var(--blush); border: 1px solid rgba(212,168,150,0.4); color: var(--clay); cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; }
+  .story-nav-pill:hover, .story-nav-pill.active { background: var(--terra); border-color: var(--terra); color: var(--deep); }
+  .story-label { font-size: 11px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terra); margin-bottom: 16px; }
+  .story-title { font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(28px,4vw,48px); font-weight: 300; line-height: 1.1; margin-bottom: 8px; }
+  .story-title em { font-style: italic; color: var(--clay); }
+  .story-context { font-family: "Cormorant Garamond", Georgia, serif; font-size: 15px; font-style: italic; color: var(--clay); margin-bottom: 16px; }
+  .story-intro { font-size: 14px; color: #5a3c38; line-height: 1.8; max-width: 780px; margin-bottom: 36px; }
+  .story-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
+  .story-panel { background: var(--blush); border-radius: 12px; padding: 22px 24px; }
+  .story-panel-label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terra); margin-bottom: 10px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .story-panel h4 { font-family: "Cormorant Garamond", Georgia, serif; font-size: 18px; font-style: italic; color: var(--deep); margin-bottom: 10px; line-height: 1.3; }
+  .story-panel ul { padding-left: 16px; }
+  .story-panel ul li { font-size: 13px; color: var(--deep); line-height: 1.75; margin-bottom: 4px; }
+  .story-impact { background: var(--deep); border-radius: 12px; padding: 20px 28px; margin-bottom: 28px; display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+  .story-impact-text { font-family: "Cormorant Garamond", Georgia, serif; font-size: 17px; font-style: italic; color: var(--terra); line-height: 1.5; flex: 1; }
+  .story-impact-stats { display: flex; gap: 24px; flex-shrink: 0; }
+  .story-impact-stat { text-align: center; }
+  .story-impact-stat .n { font-family: "Cormorant Garamond", Georgia, serif; font-size: 26px; font-weight: 600; color: var(--ivory); line-height: 1; margin-bottom: 3px; }
+  .story-impact-stat .l { font-size: 10px; color: var(--terra); letter-spacing: 0.06em; text-transform: uppercase; }
+  .story-flow { display: flex; margin-bottom: 28px; }
+  .story-step { flex: 1; background: var(--blush); padding: 16px 18px; }
+  .story-step:first-child { border-radius: 12px 0 0 12px; }
+  .story-step:last-child { border-radius: 0 12px 12px 0; }
+  .story-step + .story-step { border-left: 1px solid var(--ivory); }
+  .story-step-num { font-size: 10px; color: var(--terra); letter-spacing: 0.1em; font-weight: 600; margin-bottom: 6px; }
+  .story-step-text { font-size: 12px; color: var(--deep); line-height: 1.55; }
+  .story-media-placeholder { width: 100%; aspect-ratio: 16/9; background: var(--blush); border-radius: 14px; border: 1.5px dashed var(--terra); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-bottom: 28px; text-align: center; padding: 32px; }
+  .story-media-placeholder .ph-icon { font-size: 32px; opacity: 0.35; }
+  .story-media-placeholder .ph-label { font-family: "Cormorant Garamond", Georgia, serif; font-size: 18px; font-style: italic; color: var(--clay); }
+  .story-media-placeholder .ph-sub { font-size: 11px; color: var(--terra); letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.7; }
+  .story-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+  .story-tool { font-size: 11px; padding: 5px 14px; border-radius: 100px; background: var(--blush); color: var(--clay); letter-spacing: 0.04em; }
+  /* COMMISSION STORY - passthrough styles */
+  .fw-title { font-family: "Cormorant Garamond", Georgia, serif; font-size: clamp(30px,4vw,50px); font-weight: 300; line-height: 1.1; margin-bottom: 10px; }
   .fw-title em { font-style: italic; color: var(--clay); }
-  .fw-sub { font-family: var(--head); font-size: 15px; font-style: italic; color: var(--clay); margin-bottom: 16px; }
+  .fw-sub { font-family: "Cormorant Garamond", Georgia, serif; font-size: 15px; font-style: italic; color: var(--clay); margin-bottom: 16px; }
   .fw-intro { font-size: 14px; color: #5a3c38; line-height: 1.8; max-width: 780px; margin-bottom: 40px; }
   .reports-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; align-items: start; }
   .report-label-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
   .report-badge { display: inline-flex; align-items: center; gap: 7px; padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
   .badge-before { background: #fee2e2; color: #7f1d1d; border: 1px solid #fca5a5; }
-  .badge-before::before { content: "⚠"; font-size: 11px; }
-  .badge-after  { background: #dcfce7; color: #14532d; border: 1px solid #86efac; }
-  .badge-after::before  { content: "✅"; font-size: 11px; }
+  .badge-before::before { content: "\26A0"; font-size: 11px; }
+  .badge-after { background: #dcfce7; color: #14532d; border: 1px solid #86efac; }
+  .badge-after::before { content: "\2705"; font-size: 11px; }
   .report-label-line { flex: 1; height: 1px; background: var(--blush); }
-  .report-amount { font-family: var(--head); font-size: 1.1rem; font-weight: 400; white-space: nowrap; }
+  .report-amount { font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.1rem; font-weight: 400; white-space: nowrap; }
   .amount-before { color: #dc2626; }
-  .amount-after  { color: #16a34a; }
+  .amount-after { color: #16a34a; }
   .db-wrapper { border: 1px solid var(--blush); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 24px rgba(61,36,32,0.06); }
   .db-bar { background: var(--deep); padding: 10px 14px; display: flex; align-items: center; gap: 7px; }
   .db-dot { width: 9px; height: 9px; border-radius: 50%; }
@@ -46,37 +99,86 @@
   .db-frame { width: 100%; border: none; display: block; min-height: 2200px; }
   .caption { padding: 18px 22px; background: var(--blush); border-left: 3px solid var(--clay); border-radius: 0 10px 10px 0; }
   .caption-label { font-size: 10px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--clay); margin-bottom: 6px; }
-  .caption-text { font-family: var(--head); font-size: 1.05rem; font-style: italic; color: var(--deep); line-height: 1.6; }
-  @media (max-width: 800px) { .reports-grid { grid-template-columns: 1fr; } .wrap { padding: 40px 20px 60px; } }
+  .caption-text { font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.05rem; font-style: italic; color: var(--deep); line-height: 1.6; }
+  @media (max-width: 800px) {
+    .fw-cards { grid-template-columns: 1fr; }
+    .gallery-wrap, .story-wrap { padding: 32px 20px 60px; }
+    .reports-grid, .story-2col { grid-template-columns: 1fr; }
+    .story-flow { flex-direction: column; }
+    .story-step { border-left: none; border-top: 1px solid var(--ivory); }
+    .story-step:first-child { border-radius: 12px 12px 0 0; border-top: none; }
+    .story-step:last-child { border-radius: 0 0 12px 12px; }
+    .story-impact { flex-direction: column; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <p class="section-label">Featured Work</p>
-  <h2 class="fw-title">The data was there.<br><em>The reporting layer wasn't.</em></h2>
-  <p class="fw-sub">Commission Reconciliation · US Aviation Company · 2023–2026</p>
-  <p class="fw-intro">
-    The ERP held open commissions. QuickBooks held some payments — but not all of them, because bank transactions weren't always linked in time. Three sources, none connected, no one reconciling across them. Sales reps were owed money. Nobody knew how much, or for how long.<br><br>
-    Working with my team, we connected all three — ERP, QuickBooks, and the bank — and ran the first full reconciliation across three years of activity. What surfaced was $70,682.71 in unverified commissions. More importantly, people got paid. The report format and reporting standard you see below is mine — built to give leadership and the team a clear, complete, decision-ready picture. This covers one agent, the most significant, but the same process was applied across the full team.
-  </p>
 
-  <div class="reports-grid">
-    <div>
-      <div class="report-label-row">
-        <span class="report-badge badge-before">Before · Full Audit</span>
-        <span class="report-label-line"></span>
-        <span class="report-amount amount-before">$70,682.71 unreconciled</span>
+<!-- GALLERY -->
+<div class="view" id="view-gallery">
+  <div class="gallery-wrap">
+    <p class="section-label">03 &middot; Featured Work</p>
+    <h2 class="gallery-title">Work that left a <em>mark.</em></h2>
+    <p class="gallery-sub">Three projects. Each one a different kind of problem. Each one solved completely.</p>
+    <div class="fw-cards">
+      <div class="fw-card" onclick="showStory('commission')">
+        <span class="fw-card-num">Featured &middot; 01</span>
+        <div class="fw-card-title">The data was there.<br><em>The reporting layer wasn&rsquo;t.</em></div>
+        <div class="fw-card-context">Commission Reconciliation &middot; US Aviation &middot; 2023&ndash;2026</div>
+        <p class="fw-card-desc">Three years of commission data across three disconnected systems. No one reconciling. $70,682.71 surfaced &mdash; and resolved.</p>
+        <div class="fw-card-tags"><span class="fw-card-tag">Financial Ops</span><span class="fw-card-tag">Data Reconciliation</span><span class="fw-card-tag">Reporting Design</span></div>
+        <span class="fw-card-arrow">&rarr;</span>
       </div>
-      <div class="db-wrapper">
-        <div class="db-bar">
-          <span class="db-dot" style="background:#FF5F57"></span>
-          <span class="db-dot" style="background:#FFBD2E"></span>
-          <span class="db-dot" style="background:#28CA41"></span>
-          <span class="db-filelabel">Agent J. Rivera — Full Audit · Ness &amp; Co. · Jan 2023 – Mar 2026 · Sanitized</span>
+      <div class="fw-card" onclick="showStory('photocatalog')">
+        <span class="fw-card-num">Featured &middot; 02</span>
+        <div class="fw-card-title">Days of work.<br><em>Thousands of photos.</em></div>
+        <div class="fw-card-context">Photo Catalog System &middot; US Aviation &middot; 2025&ndash;Present</div>
+        <p class="fw-card-desc">Aircraft teardown produces 4,000 to 7,000 photos per project. Manual review, crop, rename, group by 100s -- across multiple reviewers, across days. Built a system that handles the heavy lifting. The human touch is still there. Most of the grind isn't.</p>
+        <div class="fw-card-tags"><span class="fw-card-tag">Google Vision API</span><span class="fw-card-tag">Automation</span><span class="fw-card-tag">Batch Processing</span></div>
+        <span class="fw-card-arrow">&rarr;</span>
+      </div>
+      <div class="fw-card" onclick="showStory('dashboard')">
+        <span class="fw-card-num">Featured &middot; 03</span>
+        <div class="fw-card-title">I outgrew my own<br><em>system. So I rebuilt it.</em></div>
+        <div class="fw-card-context">Dashboard Generator &middot; US Aviation &middot; 2025&ndash;Present</div>
+        <p class="fw-card-desc">Built a Sales Dashboard that worked great &mdash; until it didn&rsquo;t. Pivot errors, 20&ndash;30 min fixes, accuracy gaps. Scrapped it. Built a generator instead. Upload file. Dashboard appears.</p>
+        <div class="fw-card-tags"><span class="fw-card-tag">Dashboard Automation</span><span class="fw-card-tag">Web App</span><span class="fw-card-tag">PDF Export</span></div>
+        <span class="fw-card-arrow">&rarr;</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STORY: COMMISSION RECONCILIATION -->
+<div class="view hidden" id="view-commission">
+  <div class="story-wrap">
+    <div class="story-back-row">
+      <button class="story-back" onclick="showGallery()">Featured Work</button>
+      <div class="story-nav-pills">
+        <button class="story-nav-pill active" onclick="showStory('commission')">01 &middot; Commission</button>
+        <button class="story-nav-pill" onclick="showStory('photocatalog')">02 &middot; Photo Catalog</button>
+        <button class="story-nav-pill" onclick="showStory('dashboard')">03 &middot; Dashboard</button>
+      </div>
+    </div>
+    <p class="section-label">Featured Work</p>
+    <h2 class="fw-title">The data was there.<br><em>The reporting layer wasn&rsquo;t.</em></h2>
+    <p class="fw-sub">Commission Reconciliation &middot; US Aviation Company &middot; 2023&ndash;2026</p>
+    <p class="fw-intro">The ERP held open commissions. QuickBooks held some payments &mdash; but not all of them, because bank transactions weren&rsquo;t always linked in time. Three sources, none connected, no one reconciling across them. Sales reps were owed money. Nobody knew how much, or for how long.<br><br>Working with my team, we connected all three &mdash; ERP, QuickBooks, and the bank &mdash; and ran the first full reconciliation across three years of activity. What surfaced was $70,682.71 in unverified commissions. More importantly, people got paid. The report format and reporting standard you see below is mine &mdash; built to give leadership and the team a clear, complete, decision-ready picture. This covers one agent, the most significant, but the same process was applied across the full team.</p>
+    <div class="reports-grid">
+      <div>
+        <div class="report-label-row">
+          <span class="report-badge badge-before">Before &middot; Full Audit</span>
+          <span class="report-label-line"></span>
+          <span class="report-amount amount-before">$70,682.71 unreconciled</span>
         </div>
-        <div class="frame-scaler">
-          <div class="frame-inner" id="auditInner">
-            <iframe class="db-frame" id="auditFrame" srcdoc="<!DOCTYPE html>
+        <div class="db-wrapper">
+          <div class="db-bar">
+            <span class="db-dot" style="background:#FF5F57"></span>
+            <span class="db-dot" style="background:#FFBD2E"></span>
+            <span class="db-dot" style="background:#28CA41"></span>
+            <span class="db-filelabel">Agent J. Rivera &mdash; Full Audit &middot; Ness &amp; Co. &middot; Jan 2023 &ndash; Mar 2026 &middot; Sanitized</span>
+          </div>
+          <div class="frame-scaler"><div class="frame-inner" id="auditInner"><iframe class="db-frame" id="auditFrame" srcdoc="<!DOCTYPE html>
 <html lang=&quot;en&quot;>
 <head><meta charset=&quot;UTF-8&quot;><title>Agent J. Rivera — Full Audit Report</title>
 <link href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;>
@@ -341,28 +443,22 @@ new Chart(document.getElementById(&quot;accountChart&quot;), {
 });
 buildMonthlyChart(&quot;monthlyChart&quot;);
 </script>
-</body></html>" scrolling="no"></iframe>
+</body></html>" scrolling="no"></iframe></div></div></div>
+      </div>
+      <div>
+        <div class="report-label-row">
+          <span class="report-badge badge-after">After &middot; Latest Report</span>
+          <span class="report-label-line"></span>
+          <span class="report-amount amount-after">$3,439.80 remaining &middot; $6,999.99 advance</span>
+        </div>
+        <div class="db-wrapper">
+          <div class="db-bar">
+            <span class="db-dot" style="background:#FF5F57"></span>
+            <span class="db-dot" style="background:#FFBD2E"></span>
+            <span class="db-dot" style="background:#28CA41"></span>
+            <span class="db-filelabel">Agent J. Rivera &mdash; Latest Report &middot; Ness &amp; Co. &middot; Jan 2023 &ndash; Mar 2026 &middot; Sanitized</span>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <div class="report-label-row">
-        <span class="report-badge badge-after">After · Latest Report</span>
-        <span class="report-label-line"></span>
-        <span class="report-amount amount-after">$3,439.80 remaining · $6,999.99 advance</span>
-      </div>
-      <div class="db-wrapper">
-        <div class="db-bar">
-          <span class="db-dot" style="background:#FF5F57"></span>
-          <span class="db-dot" style="background:#FFBD2E"></span>
-          <span class="db-dot" style="background:#28CA41"></span>
-          <span class="db-filelabel">Agent J. Rivera — Latest Report · Ness &amp; Co. · Jan 2023 – Mar 2026 · Sanitized</span>
-        </div>
-        <div class="frame-scaler">
-          <div class="frame-inner" id="latestInner">
-            <iframe class="db-frame" id="latestFrame" srcdoc="<!DOCTYPE html>
+          <div class="frame-scaler"><div class="frame-inner" id="latestInner"><iframe class="db-frame" id="latestFrame" srcdoc="<!DOCTYPE html>
 <html lang=&quot;en&quot;>
 <head><meta charset=&quot;UTF-8&quot;><title>Agent J. Rivera — Latest Commission Report</title>
 <link href=&quot;https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;>
@@ -629,16 +725,156 @@ new Chart(document.getElementById(&quot;varianceChart&quot;), {
   }
 });
 </script>
-</body></html>" scrolling="no"></iframe>
-          </div>
-        </div>
+</body></html>" scrolling="no"></iframe></div></div></div>
       </div>
     </div>
+    <div class="caption">
+      <div class="caption-label">A note on standard</div>
+      <p class="caption-text">This is the standard I hold for how information gets presented. Not just accurate &mdash; clear, structured, and decision-ready.</p>
+    </div>
   </div>
+</div>
 
-  <div class="caption">
-    <div class="caption-label">A note on standard</div>
-    <p class="caption-text">This is the standard I hold for how information gets presented. Not just accurate — clear, structured, and decision-ready.</p>
+<!-- STORY: PHOTO CATALOG SYSTEM -->
+<div class="view hidden" id="view-photocatalog">
+  <div class="story-wrap">
+    <div class="story-back-row">
+      <button class="story-back" onclick="showGallery()">Featured Work</button>
+      <div class="story-nav-pills">
+        <button class="story-nav-pill" onclick="showStory('commission')">01 &middot; Commission</button>
+        <button class="story-nav-pill active" onclick="showStory('photocatalog')">02 &middot; Photo Catalog</button>
+        <button class="story-nav-pill" onclick="showStory('dashboard')">03 &middot; Dashboard</button>
+      </div>
+    </div>
+    <p class="story-label">Featured Work &middot; 02</p>
+    <h2 class="story-title">Days of work. Thousands of photos.<br><em>Every single time.</em></h2>
+    <p class="story-context">Photo Catalog System &middot; US Aviation Company &middot; 2025&ndash;Present</p>
+    <p class="story-intro">Every aircraft teardown generates 4,000 to 7,000 photos. Multiple reviewers split the load, but the work itself -- review, crop, reposition, rename, group by 100s -- is entirely manual from start to finish. The process is so repetitive and volume-heavy that focus breaks down and it bleeds into days. Built a system that handles the heavy lifting. AI flags what needs cropping, reviewers approve, one click processes the rest. The human touch is still there. Most of the grind isn't.</p>
+    <div class="story-impact">
+      <p class="story-impact-text">"AI flags what needs cropping. Reviewers approve. One click processes the rest."</p>
+      <div class="story-impact-stats">
+        <div class="story-impact-stat"><div class="n">4k-7k</div><div class="l">photos / project</div></div>
+        <div class="story-impact-stat"><div class="n">AI</div><div class="l">flags crops</div></div>
+        <div class="story-impact-stat"><div class="n">1-click</div><div class="l">batch done</div></div>
+      </div>
+    </div>
+    <div class="story-2col">
+      <div class="story-panel">
+        <div class="story-panel-label"><span>&#9888;&#65039;</span> The Problem</div>
+        <h4>Manual everything. Every project. Every time.</h4>
+        <ul>
+          <li>4,000 to 7,000 photos per teardown project, all in one folder</li>
+          <li>Multiple reviewers each working through their share manually</li>
+          <li>Review every photo individually -- crop, reposition, check orientation</li>
+          <li>Batch rename every photo to match its tag number</li>
+          <li>Manually group files into folders of 100</li>
+          <li>So repetitive and volume-heavy that focus breaks down across days</li>
+        </ul>
+      </div>
+      <div class="story-panel">
+        <div class="story-panel-label"><span>&#9989;</span> The Fix</div>
+        <h4>One MSN. One upload. Review, approve, process.</h4>
+        <ul>
+          <li>Enter the aircraft MSN once -- system knows the project context</li>
+          <li>Add tag numbers for each photo group (e.g. Tag 254)</li>
+          <li>Upload photos -- Google Vision API auto-flags photos needing crop</li>
+          <li>Reviewers reposition flagged photos and approve when satisfied</li>
+          <li>Batch process: auto-renames all photos, sorts into correct 100-groups</li>
+          <li>Multiple tags processed simultaneously across reviewers</li>
+        </ul>
+      </div>
+    </div>
+    <p class="story-label" style="margin-bottom:12px;">How It Works</p>
+    <div class="story-flow">
+      <div class="story-step"><div class="story-step-num">01</div><div class="story-step-text">Enter MSN once. Add tag numbers for each photo group.</div></div>
+      <div class="story-step"><div class="story-step-num">02</div><div class="story-step-text">Upload photos. Google Vision API scans and flags images needing crop.</div></div>
+      <div class="story-step"><div class="story-step-num">03</div><div class="story-step-text">Reviewers check flagged photos, reposition and approve.</div></div>
+      <div class="story-step"><div class="story-step-num">04</div><div class="story-step-text">One-click batch process. Auto-rename, auto-sort into 100-photo groups.</div></div>
+      <div class="story-step"><div class="story-step-num">05</div><div class="story-step-text">Multiple tags processed simultaneously. Ready to share with client.</div></div>
+    </div>
+    <div class="story-media-placeholder">
+      <span class="ph-icon">&#127916;</span>
+      <span class="ph-label">Demo video coming soon</span>
+      <span class="ph-sub">Replace placeholder with video element when ready</span>
+    </div>
+    <div class="story-tools">
+      <span class="story-tool">Google Apps Script</span><span class="story-tool">Google Vision API</span><span class="story-tool">Web App</span><span class="story-tool">Batch Processing</span><span class="story-tool">Google Drive</span>
+    </div>
+    <div class="caption">
+      <div class="caption-label">A note on scale</div>
+      <p class="caption-text">This wasn't built to save a few minutes. It was built because the manual version didn't scale -- and every new teardown project proved it. The human touch is still there. Most of the grind isn't.</p>
+    </div>
+  </div>
+</div>
+
+<div class="view hidden" id="view-dashboard">
+  <div class="story-wrap">
+    <div class="story-back-row">
+      <button class="story-back" onclick="showGallery()">Featured Work</button>
+      <div class="story-nav-pills">
+        <button class="story-nav-pill" onclick="showStory('commission')">01 &middot; Commission</button>
+        <button class="story-nav-pill" onclick="showStory('photocatalog')">02 &middot; Photo Catalog</button>
+        <button class="story-nav-pill active" onclick="showStory('dashboard')">03 &middot; Dashboard</button>
+      </div>
+    </div>
+    <p class="story-label">Featured Work &middot; 03</p>
+    <h2 class="story-title">I outgrew my own system.<br><em>So I rebuilt it.</em></h2>
+    <p class="story-context">Automated Dashboard Generator &middot; US Aviation Company &middot; 2025&ndash;Present</p>
+    <p class="story-intro">The original Sales Dashboard was good. It did exactly what it was supposed to &mdash; pull from pivot tables, display KPIs, give leadership a clean view of sales performance. For a while, it held up.<br><br>Then the data grew. More reps, more accounts, more months. The pivot tables started breaking &mdash; not crashing cleanly, just quietly misfiring. A pivot would error out with no specific reference. I&rsquo;d have to work through them one by one to find the issue. 20 to 30 minutes, sometimes more, just to get back to a working report. And the accuracy gaps were worse &mdash; the pivots weren&rsquo;t always capturing the full raw data, so the numbers were wrong without being obviously wrong.<br><br>I knew the pivot approach had a ceiling. So I scrapped it. Built a generator instead &mdash; upload a clean, standardized file, and it builds the entire dashboard automatically. No pivots. No errors. Just the report, ready in seconds.</p>
+    <div class="story-impact">
+      <p class="story-impact-text">&ldquo;20&ndash;30 minutes troubleshooting broken pivots. Now: upload file, dashboard appears. That&rsquo;s the whole process.&rdquo;</p>
+      <div class="story-impact-stats">
+        <div class="story-impact-stat"><div class="n">0</div><div class="l">pivot errors</div></div>
+        <div class="story-impact-stat"><div class="n">secs</div><div class="l">to generate</div></div>
+        <div class="story-impact-stat"><div class="n">web</div><div class="l">accessible</div></div>
+      </div>
+    </div>
+    <div class="story-2col">
+      <div class="story-panel">
+        <div class="story-panel-label"><span>&#9888;&#65039;</span> The Problem</div>
+        <h4>A good system that became a liability.</h4>
+        <ul>
+          <li>Pivot-based Sales Dashboard worked well &mdash; until data volume grew</li>
+          <li>Pivots started throwing errors with no specific location identified</li>
+          <li>Had to manually trace through all pivots to find the broken one</li>
+          <li>20&ndash;30 minutes of troubleshooting before the report was usable</li>
+          <li>Pivots not always capturing full raw data &mdash; accuracy gaps appeared</li>
+          <li>Wrong numbers with no obvious warning sign</li>
+        </ul>
+      </div>
+      <div class="story-panel">
+        <div class="story-panel-label"><span>&#9989;</span> The Fix</div>
+        <h4>Remove the dependency. Build the generator.</h4>
+        <ul>
+          <li>Scrapped the pivot approach entirely</li>
+          <li>Built an automated dashboard generator from scratch</li>
+          <li>Upload a cleaned, standardized file &mdash; system builds the full dashboard</li>
+          <li>Dashboard is web-accessible &mdash; no file needed to view it</li>
+          <li>Print-to-PDF built in &mdash; one click to share externally</li>
+          <li>No more pivot errors. No more accuracy gaps. No more manual fixes.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="story-label" style="margin-bottom:12px;">How It Works</p>
+    <div class="story-flow">
+      <div class="story-step"><div class="story-step-num">01</div><div class="story-step-text">Prepare a clean, standardized data file. Upload it to the system.</div></div>
+      <div class="story-step"><div class="story-step-num">02</div><div class="story-step-text">System reads and processes the data &mdash; no pivots, no intermediate steps.</div></div>
+      <div class="story-step"><div class="story-step-num">03</div><div class="story-step-text">Dashboard auto-generates with all KPIs, charts, and summaries populated.</div></div>
+      <div class="story-step"><div class="story-step-num">04</div><div class="story-step-text">Dashboard is live on the web &mdash; accessible without opening any file.</div></div>
+      <div class="story-step"><div class="story-step-num">05</div><div class="story-step-text">Print to PDF in one click when leadership needs to share it externally.</div></div>
+    </div>
+    <div class="story-media-placeholder">
+      <span class="ph-icon">&#127916;</span>
+      <span class="ph-label">Demo video coming soon</span>
+      <span class="ph-sub">Replace placeholder with video element when ready</span>
+    </div>
+    <div class="story-tools">
+      <span class="story-tool">Google Apps Script</span><span class="story-tool">Web App</span><span class="story-tool">Google Sheets</span><span class="story-tool">Dashboard Design</span><span class="story-tool">PDF Export</span><span class="story-tool">Data Visualization</span>
+    </div>
+    <div class="caption">
+      <div class="caption-label">A note on judgment</div>
+      <p class="caption-text">Knowing when to fix a system versus when to replace it entirely is harder than it sounds. The original dashboard wasn&rsquo;t broken &mdash; it was at its ceiling. Recognizing that ceiling, and having the conviction to rebuild from scratch rather than keep patching, is the decision that made the difference.</p>
+    </div>
   </div>
 </div>
 
@@ -646,46 +882,118 @@ new Chart(document.getElementById(&quot;varianceChart&quot;), {
   function setupFrame(frameId, innerId) {
     var frame = document.getElementById(frameId);
     var inner = document.getElementById(innerId);
+    if (!frame || !inner) return;
     function resize() {
       try {
         var h = frame.contentDocument.documentElement.scrollHeight;
-        if (h > 400) {
-          frame.style.height = h + "px";
-          inner.style.height = (h * 0.5) + "px";
-        }
-      } catch(e) {
-        frame.style.height = "2400px";
-        inner.style.height = "1200px";
+        if (h > 400) { frame.style.height = h + 'px'; inner.style.height = (h * 0.5) + 'px'; }
+      } catch(e) { frame.style.height = '2400px'; inner.style.height = '1200px'; }
+    }
+    frame.addEventListener('load', function() { resize(); setTimeout(resize, 800); setTimeout(resize, 2000); });
+  }
+  setupFrame('auditFrame','auditInner');
+  setupFrame('latestFrame','latestInner');
+
+  var storyOrder = ['commission', 'photocatalog', 'dashboard'];
+
+  function showGallery() {
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+    var g = document.getElementById('view-gallery');
+    g.classList.remove('hidden');
+    g.scrollTop = 0;
+    g.focus({ preventScroll: true });
+  }
+
+  function showStory(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+    var v = document.getElementById('view-' + id);
+    if (v) {
+      v.classList.remove('hidden');
+      v.scrollTop = 0;
+      v.focus({ preventScroll: true });
+    }
+  }
+
+  // Swipe support
+  var sx = 0, sy = 0;
+  document.addEventListener('touchstart', function(e) {
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - sx;
+    var dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) < Math.abs(dy) || Math.abs(dx) < 40) return;
+
+    var galleryVisible = !document.getElementById('view-gallery').classList.contains('hidden');
+    if (galleryVisible) {
+      // on gallery: swipe escapes to parent portfolio
+      window.parent.postMessage(dx < 0 ? 'nav:next' : 'nav:prev', '*');
+      return;
+    }
+
+    // on a story: swipe between stories, wrap to gallery at edges
+    var activeStory = null;
+    storyOrder.forEach(function(id) {
+      var v = document.getElementById('view-' + id);
+      if (v && !v.classList.contains('hidden')) activeStory = id;
+    });
+    if (!activeStory) return;
+
+    var idx = storyOrder.indexOf(activeStory);
+    if (dx < 0) {
+      // swipe left = next
+      if (idx < storyOrder.length - 1) {
+        showStory(storyOrder[idx + 1]);
+      } else {
+        // last story, swipe left = back to gallery
+        showGallery();
+      }
+    } else {
+      // swipe right = prev
+      if (idx > 0) {
+        showStory(storyOrder[idx - 1]);
+      } else {
+        // first story, swipe right = back to gallery
+        showGallery();
       }
     }
-    frame.addEventListener("load", function() {
-      resize();
-      setTimeout(resize, 800);
-      setTimeout(resize, 2000);
-    });
-  }
-  setupFrame("auditFrame","auditInner");
-  setupFrame("latestFrame","latestInner");
+  }, { passive: true });
 
-  // Escape hatch — horizontal swipe or arrow keys navigate the parent portfolio
-  (function() {
-    var sx = 0, sy = 0;
-    document.addEventListener('touchstart', function(e) {
-      sx = e.touches[0].clientX;
-      sy = e.touches[0].clientY;
-    }, { passive: true });
-    document.addEventListener('touchend', function(e) {
-      var dx = e.changedTouches[0].clientX - sx;
-      var dy = e.changedTouches[0].clientY - sy;
-      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
-        window.parent.postMessage(dx < 0 ? 'nav:next' : 'nav:prev', '*');
-      }
-    }, { passive: true });
-    document.addEventListener('keydown', function(e) {
+  // Keyboard nav
+  document.addEventListener('keydown', function(e) {
+    var galleryVisible = !document.getElementById('view-gallery').classList.contains('hidden');
+    if (galleryVisible) {
       if (e.key === 'ArrowRight') window.parent.postMessage('nav:next', '*');
-      if (e.key === 'ArrowLeft')  window.parent.postMessage('nav:prev', '*');
+      if (e.key === 'ArrowLeft') window.parent.postMessage('nav:prev', '*');
+      return;
+    }
+
+    var activeStory = null;
+    storyOrder.forEach(function(id) {
+      var v = document.getElementById('view-' + id);
+      if (v && !v.classList.contains('hidden')) activeStory = id;
     });
-  })();
+    if (!activeStory) return;
+
+    var idx = storyOrder.indexOf(activeStory);
+    if (e.key === 'ArrowRight') {
+      if (idx < storyOrder.length - 1) showStory(storyOrder[idx + 1]);
+      else showGallery();
+    }
+    if (e.key === 'ArrowLeft') {
+      if (idx > 0) showStory(storyOrder[idx - 1]);
+      else showGallery();
+    }
+  });
+
+  // Make all views focusable for immediate scroll
+  document.querySelectorAll('.view').forEach(function(v) {
+    v.setAttribute('tabindex', '-1');
+  });
+
+  showGallery();
 </script>
 </body>
 </html>
