@@ -379,13 +379,13 @@
       overflow: visible; position: static;
     }
     #panel-hero { min-height: auto; height: auto; }
-    #panel-hero svg { display: none; }
+    #panel-hero svg { display: none !important; }
     #panel-systems { min-height: auto; overflow: visible; }
     #side-dots { display: none; }
     .detail-chevron { display: none !important; }
 
     /* Hero — all three columns stack vertically, full height */
-    .hero-wrap { grid-template-columns: 1fr; height: auto; min-height: auto; align-items: flex-start; padding: 40px 0; }
+    .hero-wrap { grid-template-columns: 1fr !important; height: auto !important; min-height: auto !important; align-items: flex-start; padding: 16px 0 32px; gap: 0; }
     .hero-left { padding: 24px 24px 16px; }
     .hero-center { display: flex !important; padding: 0 24px 16px; align-items: center; flex-direction: column; }
     .hero-right { display: flex !important; padding: 0 24px 40px; height: auto; overflow: visible; }
@@ -418,6 +418,22 @@
 
     /* Personal works — stack vertically on mobile */
     .personal-grid { grid-template-columns: 1fr !important; }
+
+    /* Time Savings — fix row layout on mobile */
+    .ts-row { display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; }
+    .ts-row-num { font-size: 10px; }
+    .ts-row-name-wrap { min-width: 0; }
+    .ts-row-name { font-size: 14px; white-space: normal; }
+    .ts-row-category { font-size: 9px; }
+    .ts-row-right { align-items: flex-start; gap: 2px; }
+    .ts-row-value { font-size: 16px; }
+    .ts-row-type { font-size: 10px; }
+    .ts-impact-badge { font-size: 10px; align-self: flex-start; }
+
+    /* Personal projects — 1 column on mobile */
+    .personal-projects-grid { grid-template-columns: 1fr !important; }
+    #panel-personal > div > div[style*="grid-template-columns:repeat(3"] { grid-template-columns: 1fr !important; }
+    div[style*="grid-template-columns:repeat(3,1fr)"] { grid-template-columns: 1fr !important; }
   }
 
   /* ── LOGO LIGHTBOX ── */
@@ -644,7 +660,7 @@
 <div class="mobile-nav-drawer" id="mobile-drawer">
   <button onclick="mobileNav(0)">Home</button>
   <button onclick="mobileNav(1)">About</button>
-  <button onclick="mobileNav(2)">Featured Work</button>
+  <button onclick="mobileNav(2)">Featured Story</button>
   <button onclick="mobileNav(3)">Systems</button>
   <div class="mobile-nav-divider"></div>
   <button onclick="mobileNav(4)">Time Savings</button>
@@ -4230,9 +4246,8 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
     current = index;
 
     if (isMobileLayout()) {
-      // Mobile: scroll the page to this panel's natural position
       const target = panels[index];
-      const navH = 64;
+      const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 64;
       const top = target.getBoundingClientRect().top + window.scrollY - navH;
       window.scrollTo({ top, behavior: 'smooth' });
     } else {
@@ -4402,8 +4417,10 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
     drawer.classList.toggle('open');
   }
   function mobileNav(index) {
-    document.getElementById('mobile-drawer').classList.remove('open');
-    goTo(index);
+    const drawer = document.getElementById('mobile-drawer');
+    drawer.classList.remove('open');
+    // Wait for drawer to close before calculating scroll position
+    setTimeout(function() { goTo(index); }, 50);
   }
   // Close drawer on outside tap
   document.addEventListener('click', e => {
