@@ -3980,7 +3980,7 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
     <div class="panel-inner">
       <p class="section-label">Personal Projects</p>
       <p class="personal-tagline">Because the habit of building doesn't stop at 5pm.</p>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px;">
+      <div id="personal-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px;">
 
         <!-- Finance Tracker -->
         <div style="background:var(--blush);border-radius:14px;border:1px solid rgba(212,168,150,0.4);overflow:hidden;">
@@ -4247,9 +4247,12 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
 
     if (isMobileLayout()) {
       const target = panels[index];
-      const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 64;
-      const top = target.getBoundingClientRect().top + window.scrollY - navH;
-      window.scrollTo({ top, behavior: 'smooth' });
+      // Use offsetTop for absolute document position, not viewport-relative getBoundingClientRect
+      let offsetTop = 0;
+      let el = target;
+      while (el) { offsetTop += el.offsetTop; el = el.offsetParent; }
+      const navH = 64;
+      window.scrollTo({ top: offsetTop - navH, behavior: 'smooth' });
     } else {
       track.style.transform = `translateX(-${index * 100}vw)`;
       const panel = panels[index];
@@ -4309,7 +4312,10 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
     document.querySelectorAll('.project-detail').forEach(d => d.classList.remove('active'));
     if (isMobileLayout()) {
       const sysPanel = document.getElementById('panel-systems');
-      window.scrollTo({ top: sysPanel.getBoundingClientRect().top + window.scrollY - 64, behavior: 'auto' });
+      let offsetTop = 0;
+      let el = sysPanel;
+      while (el) { offsetTop += el.offsetTop; el = el.offsetParent; }
+      window.scrollTo({ top: offsetTop - 64, behavior: 'auto' });
     } else {
       document.getElementById('panel-systems').scrollTop = 0;
     }
@@ -4326,7 +4332,10 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
     if (det) {
       det.classList.add('active');
       if (isMobileLayout()) {
-        window.scrollTo({ top: det.getBoundingClientRect().top + window.scrollY - 64, behavior: 'auto' });
+        let offsetTop = 0;
+        let el = det;
+        while (el) { offsetTop += el.offsetTop; el = el.offsetParent; }
+        window.scrollTo({ top: offsetTop - 64, behavior: 'auto' });
       } else {
         det.scrollTop = 0;
         det.focus({ preventScroll: true });
@@ -4471,6 +4480,28 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
     setText('stat-panel-systems', systemCount);
     setText('stat-panel-hrs', hrsDisplay);
   }
+  // Mobile layout fixes applied via JS since inline styles override CSS selectors
+  function applyMobileFixes() {
+    if (!isMobileLayout()) return;
+    // Personal grid → 1 column
+    const pg = document.getElementById('personal-grid');
+    if (pg) pg.style.gridTemplateColumns = '1fr';
+    // Hero fixes
+    const hero = document.getElementById('panel-hero');
+    if (hero) { hero.style.minHeight = 'auto'; hero.style.height = 'auto'; }
+    const heroWrap = hero ? hero.querySelector('.hero-wrap') : null;
+    if (heroWrap) {
+      heroWrap.style.gridTemplateColumns = '1fr';
+      heroWrap.style.height = 'auto';
+      heroWrap.style.minHeight = 'auto';
+    }
+    // Hide SVG icons layer on mobile
+    const heroSvg = hero ? hero.querySelector('svg') : null;
+    if (heroSvg) heroSvg.style.display = 'none';
+  }
+  applyMobileFixes();
+  window.addEventListener('resize', applyMobileFixes);
+
   recalcStats();
 
   // Reset transform cleanly when crossing the mobile/desktop breakpoint
