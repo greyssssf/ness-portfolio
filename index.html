@@ -383,15 +383,15 @@
 
     /* Hero — force single column stack */
     .hero-wrap { display: grid !important; grid-template-columns: 1fr !important; height: auto !important; min-height: auto !important; width: 100% !important; padding: 0 !important; }
-    .hero-left { width: 100% !important; padding: 24px 20px 16px !important; box-sizing: border-box !important; }
+    .hero-left { width: 100% !important; padding: 48px 20px 16px !important; box-sizing: border-box !important; }
     .hero-center { display: flex !important; flex-direction: column !important; align-items: center !important; width: 100% !important; padding: 0 20px 16px !important; box-sizing: border-box !important; }
     .hero-right { display: flex !important; flex-direction: column !important; width: 100% !important; padding: 0 20px 32px !important; height: auto !important; overflow: visible !important; box-sizing: border-box !important; }
     .hero-photo-wrap { max-width: 200px !important; width: 200px !important; margin: 0 auto 16px !important; }
     .hero-photo-wrap img { width: 200px !important; height: 240px !important; object-fit: cover !important; border-radius: 12px !important; }
     .hero-stats-row { width: 100% !important; max-width: 300px !important; margin: 0 auto 12px !important; }
     .hero-ticker-wrap { width: 100% !important; }
-    .notebook { padding: 16px 16px 16px 28px !important; max-height: 280px !important; }
-    .builders-text { max-height: 220px !important; overflow-y: auto !important; font-size: 11px !important; }
+    .notebook { padding: 16px 16px 16px 28px !important; max-height: none !important; height: auto !important; }
+    .builders-text { max-height: none !important; height: auto !important; overflow-y: visible !important; font-size: 11px !important; }
 
     /* Systems */
     .project-grid { grid-template-columns: repeat(2,1fr); }
@@ -412,7 +412,7 @@
 
     /* Featured Work iframe — let it size naturally to its content */
     #panel-featured { overflow: visible; height: auto; }
-    #featuredFrame { height: 1400px; }
+    #featuredFrame { height: 3000px !important; }
 
     /* Personal works — stack vertically on mobile */
     .personal-grid { grid-template-columns: 1fr !important; }
@@ -4244,13 +4244,16 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
     current = index;
 
     if (isMobileLayout()) {
-      const target = panels[index];
-      // Use offsetTop for absolute document position, not viewport-relative getBoundingClientRect
-      let offsetTop = 0;
-      let el = target;
-      while (el) { offsetTop += el.offsetTop; el = el.offsetParent; }
       const navH = 64;
-      window.scrollTo({ top: offsetTop - navH, behavior: 'smooth' });
+      // Use precomputed offsets if available, else compute now
+      let offsetTop = 0;
+      if (window._panelOffsets && window._panelOffsets[index] !== undefined) {
+        offsetTop = window._panelOffsets[index];
+      } else {
+        let el = panels[index];
+        while (el) { offsetTop += el.offsetTop; el = el.offsetParent; }
+      }
+      window.scrollTo({ top: Math.max(0, offsetTop - navH), behavior: 'smooth' });
     } else {
       track.style.transform = `translateX(-${index * 100}vw)`;
       const panel = panels[index];
@@ -4426,8 +4429,17 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
   function mobileNav(index) {
     const drawer = document.getElementById('mobile-drawer');
     drawer.classList.remove('open');
-    // Wait for drawer to close before calculating scroll position
-    setTimeout(function() { goTo(index); }, 50);
+    setTimeout(function() {
+      // Always recompute offsets fresh when nav is tapped
+      const navH = 64;
+      const target = panels[index];
+      if (!target) return;
+      let offsetTop = 0;
+      let el = target;
+      while (el) { offsetTop += el.offsetTop; el = el.offsetParent; }
+      window.scrollTo({ top: Math.max(0, offsetTop - navH), behavior: 'smooth' });
+      if (index !== 3 && index !== 4) showGallery();
+    }, 50);
   }
   // Close drawer on outside tap
   document.addEventListener('click', e => {
@@ -4496,6 +4508,29 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
     // Hide SVG icons layer on mobile
     const heroSvg = hero ? hero.querySelector('svg') : null;
     if (heroSvg) heroSvg.style.display = 'none';
+    // Fix time savings rows - apply flex column layout via JS
+    document.querySelectorAll('.ts-row').forEach(function(row) {
+      row.style.display = 'flex';
+      row.style.flexDirection = 'column';
+      row.style.gap = '4px';
+      row.style.padding = '12px 14px';
+    });
+    document.querySelectorAll('.ts-row-name').forEach(function(el) {
+      el.style.whiteSpace = 'normal';
+      el.style.fontSize = '13px';
+    });
+    document.querySelectorAll('.ts-row-right').forEach(function(el) {
+      el.style.alignItems = 'flex-start';
+    });
+    document.querySelectorAll('.ts-row-value').forEach(function(el) {
+      el.style.fontSize = '15px';
+    });
+    // Fix mobile nav - precompute panel offsets
+    window._panelOffsets = Array.from(panels).map(function(p) {
+      var offset = 0, el = p;
+      while(el) { offset += el.offsetTop; el = el.offsetParent; }
+      return offset;
+    });
   }
   applyMobileFixes();
   setTimeout(applyMobileFixes, 100);
