@@ -372,6 +372,7 @@
 
     /* ── MOBILE: convert horizontal panel-swipe into natural vertical scroll ── */
     html, body { height: auto !important; overflow: visible !important; overflow-x: hidden !important; }
+    body { padding-top: var(--nav-h) !important; } /* nav is still position:fixed — reserve space so it doesn't cover the top of the content */
     #viewport { position: static !important; height: auto !important; overflow: visible !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: auto !important; }
     #track { display: block !important; height: auto !important; width: 100% !important; transform: none !important; transition: none !important; }
     .panel { flex: none !important; width: 100% !important; height: auto !important; min-height: auto !important; overflow: visible !important; position: static !important; }
@@ -410,9 +411,11 @@
     .about-wrap { padding: 40px 24px 64px; }
     .contact-wrap { padding: 40px 24px; }
 
-    /* Featured Work iframe — let it size naturally to its content */
+    /* Featured Work iframe — sized precisely by resizeFeatured() inside the
+       iframe itself (same-origin srcdoc). This is just a fallback so there's
+       no zero-height flash before that first runs. */
     #panel-featured { overflow: visible; height: auto; }
-    #featuredFrame { height: 3000px !important; }
+    #featuredFrame { height: auto !important; min-height: 900px; }
 
     /* Personal works — stack vertically on mobile */
     .personal-grid { grid-template-columns: 1fr !important; }
@@ -989,6 +992,20 @@
     .story-step:first-child { border-radius: 12px 12px 0 0; border-top: none; }
     .story-step:last-child { border-radius: 0 0 12px 12px; }
     .story-impact { flex-direction: column; }
+    /* Views were absolutely-positioned overlay tabs, each independently
+       scrollable (overflow-y:auto) inside a fixed-height html/body. On mobile
+       that meant a swipe got captured by whichever view box it started on,
+       fighting the outer page scroll. Flatten to normal document flow instead
+       — only the active view renders, and it just flows with the page. */
+    html, body { height: auto !important; overflow: visible !important; }
+    .view { position: static !important; overflow: visible !important; display: none !important; }
+    .view:not(.hidden) { display: block !important; }
+    /* The embedded dashboard previews (auditFrame/latestFrame) and the
+       procurement report iframe are separate scrollable boxes nested inside
+       the view above — same trapping problem one level deeper. They're
+       view-only previews, so let touches pass straight through to the page. */
+    .frame-scaler { max-height: none !important; overflow: visible !important; }
+    .db-frame, #procFrame { pointer-events: none !important; }
   }
 </style>
 </head>
@@ -3108,12 +3125,27 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
 
   var storyOrder = ['commission', 'photocatalog', 'dashboard', 'procurement'];
 
+  // On mobile, views are flattened into normal flow (see the mobile media
+  // query above) instead of stacked as absolute overlay tabs. That means the
+  // outer #featuredFrame needs to keep growing to match whichever view/story
+  // is currently showing, or the page just falls back to trapped internal
+  // scrolling. Same-origin srcdoc, so window.frameElement is directly usable.
+  function resizeFeatured() {
+    if (!window.matchMedia('(max-width: 800px)').matches) return;
+    if (!window.frameElement) return;
+    requestAnimationFrame(function() {
+      window.frameElement.style.height = document.body.scrollHeight + 'px';
+    });
+  }
+
   function showGallery() {
     document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
     var g = document.getElementById('view-gallery');
     g.classList.remove('hidden');
     g.scrollTop = 0;
     g.focus({ preventScroll: true });
+    resizeFeatured();
+    setTimeout(resizeFeatured, 500);
   }
 
   function showStory(id) {
@@ -3124,7 +3156,12 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
       v.scrollTop = 0;
       v.focus({ preventScroll: true });
     }
+    resizeFeatured();
+    // Dashboard previews inside the story can load/resize slightly late
+    setTimeout(resizeFeatured, 500);
+    setTimeout(resizeFeatured, 1200);
   }
+  window.addEventListener('resize', resizeFeatured);
 
   // Swipe support
   var sx = 0, sy = 0;
@@ -4311,15 +4348,10 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
   function showGallery() {
     gallery.style.display = 'flex';
     document.querySelectorAll('.project-detail').forEach(d => d.classList.remove('active'));
-    if (isMobileLayout()) {
-      const sysPanel = document.getElementById('panel-systems');
-      let offsetTop = 0;
-      let el = sysPanel;
-      while (el) { offsetTop += el.offsetTop; el = el.offsetParent; }
-      window.scrollTo({ top: offsetTop - 64, behavior: 'auto' });
-    } else {
-      document.getElementById('panel-systems').scrollTop = 0;
-    }
+    // Just reset the internal scroll position of the Systems panel — never
+    // move the window scroll here. That's goTo()/mobileNav()'s job, and this
+    // function used to fight with it, dragging every mobile nav tap back to Systems.
+    document.getElementById('panel-systems').scrollTop = 0;
     if (chevLeft)  { chevLeft.classList.add('disabled'); chevLeft.style.display = 'none'; }
     if (chevRight) { chevRight.classList.add('disabled'); chevRight.style.display = 'none'; }
   }
