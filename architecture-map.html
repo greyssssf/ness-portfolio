@@ -282,6 +282,21 @@
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(draw, 200);
   });
+
+  // Tell the parent page our real height once it's actually settled — not a
+  // guess. Google Fonts can finish loading after our own 'load' event, which
+  // reflows text (different font = different line wraps) and changes our
+  // true height. document.fonts.ready is the deterministic signal for "fonts
+  // are done," so the parent never locks in a height measured too early.
+  function reportHeight() {
+    if (window.parent === window) return; // not embedded, nothing to report
+    window.parent.postMessage({ type: 'archMapHeight', height: document.body.scrollHeight }, '*');
+  }
+  reportHeight();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(reportHeight);
+  }
+  setTimeout(reportHeight, 1000); // safety net for the row fade-in / anything else that settles late
 })();
 </script>
 

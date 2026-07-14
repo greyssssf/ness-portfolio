@@ -3161,7 +3161,12 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
     setTimeout(resizeFeatured, 500);
     setTimeout(resizeFeatured, 1200);
   }
-  window.addEventListener('resize', resizeFeatured);
+  let lastFeaturedWidth = window.innerWidth;
+  window.addEventListener('resize', function() {
+    if (window.innerWidth === lastFeaturedWidth) return;
+    lastFeaturedWidth = window.innerWidth;
+    resizeFeatured();
+  });
 
   // Swipe support
   var sx = 0, sy = 0;
@@ -4449,11 +4454,25 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
 
   // Auto-fit architecture map iframe to its content height
   function resizeArchMap(iframe) {
-    try {
-      var h = iframe.contentWindow.document.body.scrollHeight;
-      if (h && h > 400) iframe.style.height = h + 'px';
-    } catch(e) {}
+    function measure() {
+      try {
+        var h = iframe.contentWindow.document.body.scrollHeight;
+        if (h && h > 400) iframe.style.height = h + 'px';
+      } catch(e) {}
+    }
+    measure();
+    setTimeout(measure, 300);
+    setTimeout(measure, 800);
+    setTimeout(measure, 1500);
   }
+  // Authoritative resize: architecture-map.html posts its real height once
+  // its fonts are confirmed loaded (document.fonts.ready), which is more
+  // reliable than any fixed timeout guessed from the parent side.
+  window.addEventListener('message', function(e) {
+    if (!e.data || e.data.type !== 'archMapHeight') return;
+    var f = document.getElementById('archMapFrame');
+    if (f && e.data.height > 400) f.style.height = e.data.height + 'px';
+  });
   function toggleDrawer() {
     const drawer = document.getElementById('mobile-drawer');
     drawer.classList.toggle('open');
@@ -4567,7 +4586,16 @@ new Chart(document.getElementById(&amp;quot;varianceChart&amp;quot;), {
   applyMobileFixes();
   setTimeout(applyMobileFixes, 100);
   setTimeout(applyMobileFixes, 500);
-  window.addEventListener('resize', applyMobileFixes);
+  // Mobile browsers fire 'resize' when the address bar hides/shows during
+  // scroll — height changes, width doesn't. Re-running applyMobileFixes on
+  // every one of those forced a reflow mid-scroll, which felt like scrolling
+  // randomly freezing. Only actually redo the work when the width changes.
+  let lastAppliedWidth = window.innerWidth;
+  window.addEventListener('resize', () => {
+    if (window.innerWidth === lastAppliedWidth) return;
+    lastAppliedWidth = window.innerWidth;
+    applyMobileFixes();
+  });
 
   recalcStats();
 
